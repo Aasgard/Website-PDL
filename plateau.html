@@ -1,0 +1,207 @@
+<!doctype html>
+<html class="no-js" lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Classement par position - ChessAnalysis.org</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <link rel="icon" type="image/png" href="images/favicon.png"/>
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.css">
+    <link rel="stylesheet" href="//cdn.datatables.net/1.10.10/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="bower_components/chessboard/css/chessboard-0.3.0.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<nav class="navbar navbar-default">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                    data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="index.html">
+                <img alt="Brand" src="images/favicon.png" style="width:40px;height:40px;margin-top:-10px;">
+            </a>
+            <a class="navbar-brand" href="index.html" style="color:black;">ChessAnalisys.org</a>
+        </div>
+
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+                <li><a href="index.html"><i class="fa fa-home"></i> Accueil <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                       aria-expanded="false"><i class="fa fa-pie-chart"></i> Statistiques <span
+                            class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="games.html">Par partie</a></li>
+                        <li><a href="players.html">Par joueur</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown active">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                       aria-expanded="false"><i class="fa fa-arrows"></i> Positionnement <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="openings.html">Par ouverture</a></li>
+                        <li><a href="plateau.html">Plateau</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="row" style="margin-top: 20px;">
+        <div class="col-xs-12 col-md-6">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Plateau de jeu</h3>
+                </div>
+                <div class="panel-body">
+                    <div id="board_positions"></div>
+                </div>
+                <div class="panel-footer">
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <button id="startBtn" class="btn btn-block btn-primary btn-primary unradiused">
+                                Réinitialiser
+                            </button>
+                        </div>
+                        <div class="col-xs-6">
+                            <button id="analyseBtn" class="btn btn-block btn-primary btn-primary unradiused">Analyser
+                            </button>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: 10px;">
+                        <div class="col-xs-12">
+                            <div class="input-group">
+                                <input id="search_by_fen" type="text" class="form-control input-lg unradiused"
+                                       placeholder="Insérer ici un FEN"/>
+                                <span class="input-group-btn">
+                                    <button id="search" class="btn btn-primary btn-lg unradiused" type="button">
+                                        <i class="glyphicon glyphicon-search"></i>
+                                    </button>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-12 col-md-6">
+            <h4><strong>Meilleurs parties</strong></h4>
+
+            <div class="table-responsive" style="overflow-x: auto">
+                <table class="table table-striped table-bordered" id="list_position">
+                    <thead>
+                    <tr>
+                        <th class="col-xs-8 text-center">Fen Next Position</th>
+                        <th class="col-xs-2 text-center">Score</th>
+                        <th class="col-xs-2 text-center">Détails</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+
+<!--Chargement des différentes librairies JS-->
+<script src="bower_components/jquery/dist/jquery.min.js"></script>
+<script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+<script src="bower_components/highcharts/highcharts.js"></script>
+<script src="bower_components/highcharts/highcharts-more.js"></script>
+<script src="//cdn.datatables.net/1.10.10/js/jquery.dataTables.min.js"></script>
+<script src="bower_components/chessboard/js/chess.js"></script>
+<script src="bower_components/chessboard/js/chessboard-0.3.0.min.js"></script>
+<script src="js/functions.js"></script>
+
+<script>
+    /* On créé le board logique */
+    var chess = new Chess();
+    var board2 = ChessBoard('board_positions', {
+        draggable: true,
+        dropOffBoard: 'trash',
+        position: 'start'
+    });
+    $('#startBtn').on('click', board2.start);
+
+
+    function clickGetPositionBtn() {
+        var fen = board2.fen();
+
+
+        //findPositionDataInJSON("json/RankingPosition.json", board2.fen());
+        $.getJSON("json/RankingPosition.json", function (data) {
+            var found = false;
+            var i = 0;
+            while (!found && i < data.length) {
+                if (data[i].id == fen) {
+                    var obj = data[i];
+                    found = true;
+                } else {
+                    ++i;
+                }
+            }
+
+            if (!found) {
+                alert("Cette position n'a jamais été jouée durant les tournois");
+            }
+            else {
+                var list_position = $('#list_position').DataTable({
+                    "paging": false,
+                    "processing": true,
+                    "destroy": true,
+                    "info": false,
+                    "searching": false,
+                    "ordering": true,
+                    "order": [[1, "desc"]],
+                    "lengthChange": false,
+                    "pageLength": 5,
+                    "data": obj.nexts,
+                    "columns": [
+                        {
+                            "data": "fen_next_position"/*,
+                         "render": function(data){
+                         return "onclick="+data;
+                         }*/
+                        },
+                        {"data": "score", "order": "default"},
+                        {
+                            "data": "id_game",
+                            "render": function (data) {
+                                return "<a href='game.html?g=" + data + "' class='btn btn-block btn-primary'>Details</a>";
+                            },
+                            "className": "text-center",
+                            "orderable": false
+                        }
+                    ]
+                });
+                $('#list_position tbody ').on('click', 'td:first-child', function () {
+                    board2.position(list_position.cell(this).data(), true);
+                });
+            }
+        });
+    }
+    $('#analyseBtn').on('click', clickGetPositionBtn);
+
+    function searchEngine() {
+        var sfen = document.getElementById("search_by_fen").value;
+        board2.position(sfen, true);
+    }
+    $('#search').on('click', searchEngine);
+
+    $(window).resize(board2.resize);
+
+
+</script>
+
+</html>

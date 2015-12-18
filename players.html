@@ -1,0 +1,91 @@
+<!doctype html>
+<html class="no-js" lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Liste des Joueurs - ChessAnalysis.org</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <link rel="icon" type="image/png" href="images/favicon.png"/>
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.css">
+    <link rel="stylesheet" href="bower_components/dynatable/jquery.dynatable.css">
+    <link rel="stylesheet" href="//cdn.datatables.net/1.10.10/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<nav class="navbar navbar-default">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                    data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="index.html">
+                <img alt="Brand" src="images/favicon.png" style="width:40px;height:40px;margin-top:-10px;">
+            </a>
+            <a class="navbar-brand" href="index.html" style="color:black;">ChessAnalisys.org</a>
+        </div>
+
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+                <li><a href="index.html"><i class="fa fa-home"></i> Accueil <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="dropdown active">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                       aria-expanded="false"><i class="fa fa-pie-chart"></i> Statistiques <span
+                            class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="games.html">Par partie</a></li>
+                        <li><a href="player.html">Par joueur</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                       aria-expanded="false"><i class="fa fa-arrows"></i> Positionnement <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="openings.html">Par ouverture</a></li>
+                        <li><a href="plateau.html">Plateau</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="row">
+        <div class="col-xs-12">
+            <h4><strong>Classement joueurs</strong></h4>
+
+            <div class="table-responsive">
+                <table class="table table-striped table-bordered" id="players_table">
+                    <thead>
+                    <tr>
+                        <th class="col-xs-2">Elo</th>
+                        <th class="col-xs-2">Name</th>
+                        <th class="col-xs-2">Nb games win</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+</body>
+
+<!--Chargement des différentes librairies JS-->
+<script src="bower_components/jquery/dist/jquery.min.js"></script>
+<script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+<script src="bower_components/highcharts/highcharts.js"></script>
+<script src="bower_components/highcharts/highcharts-more.js"></script>
+<script src="bower_components/dynatable/jquery.dynatable.js"></script>
+<script src="//cdn.datatables.net/1.10.10/js/jquery.dataTables.min.js"></script>
+<script src="/js/functions.js"></script>
+<script src="/js/players.js"></script>
+
+</html>

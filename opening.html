@@ -1,0 +1,274 @@
+<!doctype html>
+<html class="no-js" lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Détail opening - ChessAnalysis.org</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <link rel="icon" type="image/png" href="images/favicon.png"/>
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.css">
+    <link rel="stylesheet" href="//cdn.datatables.net/1.10.10/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="bower_components/chessboard/css/chessboard-0.3.0.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<nav class="navbar navbar-default">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                    data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="index.html">
+                <img alt="Brand" src="images/favicon.png" style="width:40px;height:40px;margin-top:-10px;">
+            </a>
+            <a class="navbar-brand" href="index.html" style="color:black;">ChessAnalisys.org</a>
+        </div>
+
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+                <li><a href="index.html"><i class="fa fa-home"></i> Accueil <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                       aria-expanded="false"><i class="fa fa-pie-chart"></i> Statistiques <span
+                            class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="games.html">Par partie</a></li>
+                        <li><a href="players.html">Par joueur</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                       aria-expanded="false"><i class="fa fa-arrows"></i> Positionnement <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="openings.html">Par ouverture</a></li>
+                        <li><a href="plateau.html">Plateau</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="row" style="margin-top: 20px;">
+        <div class="col-xs-12 col-sm-12 col-md-6">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Plateau de jeu</h3>
+                </div>
+                <div id="board_opening" class="panel-body" style="width: 95%">
+                </div>
+                <div class="panel-footer">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div id="buttons" style="margin: 10px 0; text-align: center;"
+                                 class="btn-group btn-group-justified"
+                                 role="group">
+                                <div id="previous_move" class='btn btn-default btn-primary unradiused'><span
+                                        class="glyphicon glyphicon-arrow-left"></span>
+                                    Previous
+                                </div>
+                                <div id="next_move" class='btn btn-default btn-primary unradiused'>Next <span
+                                        class="glyphicon glyphicon-arrow-right"
+                                        ></span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-xs-4">
+                            <div id="reset" class='btn btn-default btn-block btn-primary unradiused'>Reset</div>
+                        </div>
+
+                        <div class="col-xs-4">
+                            <div id="start" class='btn btn-block btn-default btn-primary unradiused'>Start</div>
+                        </div>
+
+                        <div class="col-xs-4">
+                            <div id="stop" class='btn btn-block btn-default btn-primary unradiused'>Stop</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xs-12 col-sm-12 col-md-6">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Analyse de l'opening</h3>
+                </div>
+                <div class="panel-body">
+                    <div id="chart_opening"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+
+<!--Chargement des différentes librairies JS-->
+<script src="bower_components/jquery/dist/jquery.min.js"></script>
+<script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+<script src="bower_components/highcharts/highcharts.js"></script>
+<script src="bower_components/highcharts/highcharts-more.js"></script>
+<script src="//cdn.datatables.net/1.10.10/js/jquery.dataTables.min.js"></script>
+<script src="bower_components/chessboard/js/chess.js"></script>
+<script src="bower_components/chessboard/js/chessboard-0.3.0.min.js"></script>
+<script src="js/functions.js"></script>
+
+<script>
+    var moves = [];
+    var chess, chess2;
+    var board_opening;
+    var fens;
+    var nbmove = 0;
+
+    var interval;
+    if (isset(getURLParameter("o"))) {
+        var urlparameter = getURLParameter("o");
+        $.getJSON("json/Opening.json", function (data) {
+            var found = false;
+            var i = 0;
+            while (!found && i < data.length) {
+                if (data[i].id == urlparameter) {
+                    var obj = data[i];
+                    found = true;
+                } else {
+                    i++;
+                }
+            }
+            if (!found) {
+                document.location.href = "/openings.html";
+            }
+            drawPieOpening(obj.data);
+
+            chess = new Chess();
+
+            chess.load_pgn(obj.moves);
+            /* On créé le board graphique */
+            board_opening = ChessBoard('board_opening', {position: 'start', moveSpeed: 'slow'});
+            fens = [];
+            fens[nbmove] = board_opening.fen();
+            // make some moves
+            chess2 = new Chess();
+
+
+            //var initialFEN = chess.fen();
+            $('#next_move').click(function () {
+                next_move();
+            })
+            $('#previous_move').on('click', function () {
+                previous_move();
+            });
+            $('#reset').on('click', function () {
+                reset();
+            });
+
+            $('#start').on('click', function () {
+
+                interval = setInterval(play, 800);
+            });
+
+            $('#stop').on('click', function () {
+
+                clearInterval(interval);
+            });
+
+            $(window).resize(board_opening.resize);
+        });
+    } else {
+        document.location.href = "/openings.html";
+    }
+    function reset() {
+        clearInterval(interval);
+        board_opening.start();
+        nbmove = 0;
+        if ($('#next_move').hasClass("disabled")) {
+            $('#next_move').toggleClass("disabled");
+        }
+    }
+
+    function play() {
+        if (nbmove <= chess.history().length - 1) {
+            next_move();
+        } else {
+            clearInterval(interval);
+        }
+    }
+    function next_move() {
+        if (nbmove <= chess.history().length - 1) {
+            if (fens.length < nbmove + 2) {
+                chess2.move(chess.history()[nbmove]);
+                board_opening.position(chess2.fen().split(" ")[0]);
+                nbmove++;
+                fens[nbmove] = board_opening.fen();
+            } else {
+                nbmove++;
+                board_opening.position(fens[nbmove]);
+            }
+        }
+        if (nbmove == chess.history().length) {
+            if (!$('#next_move').hasClass("disabled")) {
+                $('#next_move').toggleClass("disabled");
+            }
+        }
+    }
+
+    function previous_move() {
+        if (nbmove == chess.history().length) {
+            if ($('#next_move').hasClass("disabled")) {
+                $('#next_move').toggleClass("disabled");
+            }
+
+        }
+        if (nbmove > 0) {
+            nbmove--;
+            board_opening.position(fens[nbmove]);
+
+        }
+
+    }
+
+    function drawPieOpening(data) {
+        $('#chart_opening').highcharts({
+            chart: {
+                plotBackgroundColor: null,
+                plotBorderWidth: null,
+                plotShadow: false,
+                type: 'pie',
+                backgroundColor: 'rgba(255, 255, 255, 0)'
+            },
+            title: {
+                text: null
+            },
+            exporting: null,
+            credits: {
+                enabled: false
+            },
+            tooltip: {
+                enabled: false
+            },
+            plotOptions: {
+                pie: {
+                    allowPointSelect: true,
+                    cursor: 'pointer',
+                    dataLabels: {
+                        enabled: true,
+                        format: '<b>{point.name}</b>: {point.percentage:.1f} %'
+                    }
+                }
+            },
+            series: [{
+                data: data
+            }]
+        });
+    }
+</script>
+
+</html>

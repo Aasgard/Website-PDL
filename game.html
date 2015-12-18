@@ -1,0 +1,388 @@
+<!doctype html>
+<html class="no-js" lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Détail Game - ChessAnalysis.org</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <link rel="icon" type="image/png" href="images/favicon.png"/>
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.css">
+    <link rel="stylesheet" href="//cdn.datatables.net/1.10.10/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="bower_components/chessboard/css/chessboard-0.3.0.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<nav class="navbar navbar-default">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                    data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="index.html">
+                <img alt="Brand" src="images/favicon.png" style="width:40px;height:40px;margin-top:-10px;">
+            </a>
+            <a class="navbar-brand" href="index.html" style="color:black;">ChessAnalisys.org</a>
+        </div>
+
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+                <li><a href="index.html"><i class="fa fa-home"></i> Accueil <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="dropdown active">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                       aria-expanded="false"><i class="fa fa-pie-chart"></i> Statistiques <span
+                            class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="games.html">Par partie</a></li>
+                        <li><a href="players.html">Par joueur</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                       aria-expanded="false"><i class="fa fa-arrows"></i> Positionnement <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="openings.html">Par ouverture</a></li>
+                        <li><a href="plateau.html">Plateau</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="row" style="margin-top: 20px;">
+        <div class="col-xs-12 col-md-6">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Informations</h3>
+                </div>
+                <div id="global_info" class="panel-body" style="width: 95%">
+                    <div class="row">
+                        <div class="col-xs-12 col-md-6">
+                            <ul>
+                                <li>
+                                    Date : <span id="date"></span>
+                                </li>
+                                <li>
+                                    Event : <span id="event"></span>
+                                </li>
+                                <li>
+                                    Opening : <span id="name_opening"></span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="col-xs-12 col-md-6">
+                            <ul>
+                                <li>
+                                    Black player : <span id="black_player"></span>
+                                </li>
+                                <li>
+                                    White player : <span id="white_player"></span>
+                                </li>
+                                <li>
+                                    Winner : <span id="result"></span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Score evolution</h3>
+                </div>
+                <div id="evolution" class="panel-body">
+
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-12 col-md-6">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Replay game</h3>
+                </div>
+                <div id="pgn" class="panel-body">
+                    <div id="board"></div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div id="buttons" style="margin: 10px 0; text-align: center;" class="btn-group btn-group-justified"
+                                 role="group">
+                                <div id="previous_move" class='btn btn-default btn-primary'><span class="glyphicon glyphicon-arrow-left"></span> Previous</div>
+                                <div id="next_move" class='btn btn-default btn-primary'>Next <span class="glyphicon glyphicon-arrow-right"></span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-xs-4">
+                            <div id="reset" class='btn btn-default btn-block btn-primary'>Reset</div>
+                        </div>
+
+                        <div class="col-xs-4">
+                            <div id="start" class='btn btn-block btn-default btn-primary'>Start</div>
+                        </div>
+
+                        <div class="col-xs-4">
+                            <div id="stop" class='btn btn-block btn-default btn-primary'>Stop</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--
+ affiche toute les infos
+ evolution du score (highcharts)
+ pgn lecteur
+-->
+
+</body>
+
+<!--Chargement des différentes librairies JS-->
+<script src="bower_components/jquery/dist/jquery.min.js"></script>
+<script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+<script src="bower_components/highcharts/highcharts.js"></script>
+<script src="bower_components/highcharts/highcharts-more.js"></script>
+<script src="//cdn.datatables.net/1.10.10/js/jquery.dataTables.min.js"></script>
+<script src="bower_components/chessboard/js/chessboard-0.3.0.min.js"></script>
+<script src="bower_components\chessboard\js\chess.js"></script>
+
+<script src="js/functions.js"></script>
+
+
+<script>
+    function findGameInJSON(json, id) {
+
+        $.getJSON(json, function (data) {
+            var found = false;
+            var i = 0;
+            while (!found && i < data.length) {
+                if (data[i].id_game == id) {
+                    var res = data[i];
+                    found = true;
+                } else {
+                    i++;
+                }
+            }
+            if (!found) {
+                document.location.href = "/games.html";
+            }
+            globalInfo(res);
+            evolScore(res["scores"]);
+            pgn(res["pgn"]);
+            console.log(res);
+            $('#date').text(res["date"]);
+            $('#event').text(res["event_name"]);
+            $('#name_opening').html("<a href='detailopening.html?o=" + res["id_opening"] + "'>" + res["name_opening"] + "</a>");
+            $("#black_player").html("<a href='player.html?p=" + res["id_black"] + "'>" + res["name_black"] + "</a>");
+            $("#white_player").html("<a href='player.html?p=" + res["id_white"] + "'>" + res["name_white"] + "</a>")
+            if (res["result"] == 0) {
+                $('#result').text("White");
+            } else if (res["result"] == 1) {
+                $('#result').text("Black");
+            } else {
+                $('#result').text("Ex aequo");
+            }
+			if(isset(getURLParameter("fen"))){
+				
+				playToFen(getURLParameter("fen"));
+			}
+        });
+    }
+
+    if (isset(getURLParameter("g"))) {
+        var urlparameter = getURLParameter("g");
+        findGameInJSON("json/Game.json", urlparameter);
+    } else {
+        document.location.href = "games.html";
+    }
+
+    function globalInfo(game) {
+
+    }
+
+    function evolScore(scores) {
+        var player1 = [];
+        var player2 = [];
+        for (var i in scores) {
+            if (i % 2 == 0) {
+                player1[player1.length] = scores[i]["score"];
+            } else {
+                player2[player2.length] = scores[i]["score"];
+            }
+        }
+
+
+        $('#evolution').highcharts({
+            chart: {
+                type: 'area'
+            },
+            title: {
+                text: 'Fluctuation de score'
+            },
+            xAxis: {
+                allowDecimals: false,
+                labels: {
+                    formatter: function () {
+                        return this.value;
+                    }
+                }
+            },
+            yAxis: {
+                title: {
+                    text: 'Score CP'
+                },
+                tickInterval: 100,
+                minPadding: 0.0,
+                maxPadding: 0.0
+            },
+            tooltip: {
+                pointFormat: 'score : {point.y}'
+            },
+            plotOptions: {
+                area: {
+                    pointStart: 1,
+                    marker: {
+                        enabled: false,
+                        symbol: 'circle',
+                        radius: 2,
+                        states: {
+                            hover: {
+                                enabled: true
+                            }
+                        }
+                    }
+                }
+            },
+            series: [{
+                name: 'Joueur 1',
+                data: player1
+            }, {
+                name: 'Joueur 2',
+                data: player2
+            }]
+        });
+
+
+    }
+
+    var interval;
+	var moves =[];
+	var chess, chess2;
+	var board_opening;
+	var fens;
+	var nbmove = 0;
+    function pgn(PGN) {
+		console.log(PGN);
+		chess= new Chess();
+
+            chess.load_pgn(PGN);
+            /* On créé le board graphique */
+            board_opening = ChessBoard('board', {position: 'start', moveSpeed: 'slow'});
+			fens = [];
+			fens[nbmove] = board_opening.fen();
+			// make some moves
+			chess2 = new Chess();
+			
+        $('#reset').on('click', function () {
+			reset();
+            
+        });
+
+        $('#start').on('click', function () {
+
+            interval = setInterval(play, 800);
+        });
+
+        $('#stop').on('click', function () {
+
+            clearInterval(interval);
+        });
+
+        $('#next_move').on('click', function () {
+            next_move();
+        });
+
+        $('#previous_move').on('click', function () {
+            previous_move();
+        });
+    }
+
+	function reset(){
+		clearInterval(interval);
+		board_opening.start();
+		nbmove = 0;
+		if ($('#next_move').hasClass("disabled")) {
+			$('#next_move').toggleClass("disabled");
+		}
+	}
+	
+    function play() {
+
+        if (nbmove < chess.history().length) {
+            next_move();
+        } else {
+            clearInterval(interval);
+        }
+    }
+	
+	function next_move(){
+		if(nbmove < chess.history().length){
+			if(fens.length < nbmove+2){
+				console.log("next " + nbmove);
+				chess2.move(chess.history()[nbmove]);
+				board_opening.position(chess2.fen().split(" ")[0]);
+				nbmove++;
+				fens[nbmove] = board_opening.fen();
+			}else{
+				nbmove++;
+				board_opening.position(fens[nbmove]);				
+			}			
+		}else{
+			if (!$('#next_move').hasClass("disabled")) {
+                $('#next_move').toggleClass("disabled");
+            }
+		}		
+	}
+	
+	function previous_move() {
+        if (nbmove == chess.history().length) {
+            if ($('#next_move').hasClass("disabled")) {
+                $('#next_move').toggleClass("disabled");
+            }
+			
+        }
+        if (nbmove > 0) {
+			nbmove--;
+            board_opening.position(fens[nbmove]);
+            
+        }
+
+    }
+	
+	function playToFen(FEN){
+		var find = false;
+		while(!find && nbmove < chess.history().length){
+			next_move();
+			if(fens[nbmove -1] == FEN){
+				find = true;
+				previous_move();
+			}
+		}
+		
+		if(!find){
+			reset();
+		}
+	}
+
+
+</script>
+
+</html>

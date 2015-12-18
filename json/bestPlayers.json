@@ -1,0 +1,36 @@
+[
+{
+ "best_players": [
+  {
+   "nb_games_loose": 0,
+   "name": "Mamedjarova,Z",
+   "nb_games_win": 2,
+   "rang": 1
+  },
+  {
+   "nb_games_loose": 0,
+   "name": "Weichhold,P",
+   "nb_games_win": 2,
+   "rang": 2
+  },
+  {
+   "nb_games_loose": 0,
+   "name": "Simantsev,M",
+   "nb_games_win": 1,
+   "rang": 3
+  },
+  {
+   "nb_games_loose": 0,
+   "name": "Steinhart,Roel",
+   "nb_games_win": 1,
+   "rang": 4
+  },
+  {
+   "nb_games_loose": 0,
+   "name": "Svoboda,Zde1",
+   "nb_games_win": 1,
+   "rang": 5
+  }
+ ],
+ "id": 1
+}]

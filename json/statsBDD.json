@@ -1,0 +1,18 @@
+[
+{
+ "global_stats": [
+  {
+   "valeur": 99,
+   "libelle": "Nombre de games"
+  },
+  {
+   "valeur": 152,
+   "libelle": "Nombre de joueurs"
+  },
+  {
+   "valeur": 2,
+   "libelle": "Nombre d'evenements"
+  }
+ ],
+ "id": 1
+}]
